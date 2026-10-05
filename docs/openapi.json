@@ -1,0 +1,1190 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "water-leak-intelligence",
+  "version": "1.0.0"
+ },
+ "paths": {
+  "/v1/jobs/{job_id}": {
+   "get": {
+    "tags": [
+     "platform"
+    ],
+    "summary": "Status, attempts and result of a long-running job",
+    "operationId": "job_status_v1_jobs__job_id__get",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Job Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/jobs": {
+   "get": {
+    "tags": [
+     "platform"
+    ],
+    "summary": "Jobs by status; status=dead is the dead-letter view",
+    "operationId": "job_list_v1_jobs_get",
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "dead",
+       "title": "Status"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/audit": {
+   "get": {
+    "tags": [
+     "platform"
+    ],
+    "summary": "Latest audit events and whether the hash chain verifies",
+    "operationId": "audit_log_v1_audit_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 50,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/network:load": {
+   "post": {
+    "tags": [
+     "network"
+    ],
+    "summary": "(+) Load a synthetic utility: districts, pipes, ten years of failures, sensors and two weeks of telemetry",
+    "operationId": "load_network_v1_network_load_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoadIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/network": {
+   "get": {
+    "tags": [
+     "network"
+    ],
+    "summary": "(+) Every district: size, what was detected there, average failure risk",
+    "operationId": "network_v1_network_get",
+    "parameters": [
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/assets": {
+   "get": {
+    "tags": [
+     "network"
+    ],
+    "summary": "(+) Pipes ranked by chance of failing next year",
+    "operationId": "assets_v1_assets_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "minimum": 1,
+       "default": 20,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/assets/{asset_id}/risk": {
+   "get": {
+    "tags": [
+     "risk"
+    ],
+    "summary": "One pipe: what is known about it, its chance of failing next year and where that ranks",
+    "operationId": "asset_risk_v1_assets__asset_id__risk_get",
+    "parameters": [
+     {
+      "name": "asset_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Asset Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/telemetry": {
+   "post": {
+    "tags": [
+     "telemetry"
+    ],
+    "summary": "Ingest sensor readings. A reading already stored for that sensor and time is ignored, so a resend is harmless",
+    "operationId": "telemetry_v1_telemetry_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TelemetryIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/leaks:detect": {
+   "post": {
+    "tags": [
+     "leaks"
+    ],
+    "summary": "(+) Go through every district's telemetry: find what is unusual, and say whether it is a leak, a faulty sensor or just demand",
+    "operationId": "detect_v1_leaks_detect_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/leaks": {
+   "get": {
+    "tags": [
+     "leaks"
+    ],
+    "summary": "Detected events, most serious first",
+    "operationId": "leaks_v1_leaks_get",
+    "parameters": [
+     {
+      "name": "kind",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "pattern": "^(leak|sensor_fault|transient_demand|unexplained)$"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Kind"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/leaks/{event_id}": {
+   "get": {
+    "tags": [
+     "leaks"
+    ],
+    "summary": "One event with its evidence: night flow by day, each sensor's pressure change, and for a leak the candidate locations",
+    "operationId": "leak_v1_leaks__event_id__get",
+    "parameters": [
+     {
+      "name": "event_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Event Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/hydraulic/simulate": {
+   "post": {
+    "tags": [
+     "hydraulic"
+    ],
+    "summary": "What would the pressure do if this much water left the network at this junction?",
+    "operationId": "simulate_v1_hydraulic_simulate_post",
+    "parameters": [
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SimulateIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/work-orders": {
+   "post": {
+    "tags": [
+     "work orders"
+    ],
+    "summary": "Send a crew: to find and repair a leak, or to check a sensor. Refused for an event that needs nobody",
+    "operationId": "work_order_v1_work_orders_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WorkOrderIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/risk:train": {
+   "post": {
+    "tags": [
+     "risk"
+    ],
+    "summary": "(+) Train the pipe-failure model on the older years, test it on the latest three, then score every pipe for next year",
+    "operationId": "train_v1_risk_train_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/capital-plan/optimize": {
+   "post": {
+    "tags": [
+     "capital plan"
+    ],
+    "summary": "Which pipes to replace in which year under a fixed annual budget, beside the usual oldest-first rule",
+    "operationId": "capital_plan_v1_capital_plan_optimize_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/capital-plan": {
+   "get": {
+    "tags": [
+     "capital plan"
+    ],
+    "summary": "(+) The latest capital plan",
+    "operationId": "latest_plan_v1_capital_plan_get",
+    "parameters": [
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "LoadIn": {
+    "properties": {
+     "seed": {
+      "type": "integer",
+      "maximum": 1000000.0,
+      "minimum": 0.0,
+      "title": "Seed",
+      "description": "Which synthetic utility to generate. The demo's planted leak, drifting sensor and demand spike are in every seed",
+      "default": 17
+     }
+    },
+    "type": "object",
+    "title": "LoadIn"
+   },
+   "PlanIn": {
+    "properties": {
+     "budget_per_year": {
+      "type": "number",
+      "maximum": 100000000.0,
+      "minimum": 100000.0,
+      "title": "Budget Per Year"
+     },
+     "years": {
+      "type": "integer",
+      "maximum": 10.0,
+      "minimum": 1.0,
+      "title": "Years",
+      "default": 5
+     }
+    },
+    "type": "object",
+    "required": [
+     "budget_per_year"
+    ],
+    "title": "PlanIn"
+   },
+   "Reading": {
+    "properties": {
+     "sensor_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Sensor Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     },
+     "value": {
+      "type": "number",
+      "maximum": 100000.0,
+      "minimum": -10.0,
+      "title": "Value",
+      "description": "Metres of head for a pressure sensor, L/s for a flow meter"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sensor_id",
+     "ts",
+     "value"
+    ],
+    "title": "Reading"
+   },
+   "SimulateIn": {
+    "properties": {
+     "district": {
+      "type": "integer",
+      "maximum": 39.0,
+      "minimum": 0.0,
+      "title": "District",
+      "description": "District number, counting from 0"
+     },
+     "node": {
+      "type": "integer",
+      "maximum": 499.0,
+      "minimum": 0.0,
+      "title": "Node"
+     },
+     "lps": {
+      "type": "number",
+      "maximum": 50.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Lps",
+      "description": "Extra water drawn at that junction, in litres per second"
+     },
+     "leak_event_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Leak Event Id",
+      "description": "Compare the prediction with what the sensors saw during this event"
+     }
+    },
+    "type": "object",
+    "required": [
+     "district",
+     "node",
+     "lps"
+    ],
+    "title": "SimulateIn"
+   },
+   "TelemetryIn": {
+    "properties": {
+     "readings": {
+      "items": {
+       "$ref": "#/components/schemas/Reading"
+      },
+      "type": "array",
+      "maxItems": 5000,
+      "minItems": 1,
+      "title": "Readings"
+     }
+    },
+    "type": "object",
+    "required": [
+     "readings"
+    ],
+    "title": "TelemetryIn"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "WorkOrderIn": {
+    "properties": {
+     "leak_event_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Leak Event Id"
+     },
+     "note": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 5,
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "leak_event_id",
+     "note"
+    ],
+    "title": "WorkOrderIn"
+   }
+  }
+ }
+}

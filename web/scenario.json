@@ -1,0 +1,27 @@
+{
+ "service": "water-leak-intelligence",
+ "run": "demo-1",
+ "tokens": {"planner": "utility-planner-demo", "analyst": "utility-analyst-demo", "viewer": "utility-viewer-demo"},
+ "steps": [
+  {"title": "Load a water utility", "say": "An invented utility: 40 districts, 20,000 junctions, about 33,600 pipes, ten years of recorded pipe failures, and two weeks of pressure and flow readings every 15 minutes. Somewhere in it are a leak, a sensor that is going wrong, and a night of heavy but harmless water use.",
+   "calls": [{"key": "load", "as": "planner", "method": "POST", "path": "/v1/network:load", "body": {"seed": 17}}]},
+  {"title": "Find what is unusual, and say what it is", "say": "Every district is checked. Night flow is compared with what that district's days normally imply, so a simply busy day does not raise an alarm. Three districts stand out, and each gets a different verdict.",
+   "calls": [{"key": "det", "as": "analyst", "method": "POST", "path": "/v1/leaks:detect"}, {"key": "net", "as": "viewer", "method": "GET", "path": "/v1/network"}]},
+  {"title": "Where is the leak?", "say": "A leak lowers pressure most near itself. For each of the district's 500 junctions the hydraulic model predicts the pattern of pressure drops a leak there would cause at the ten sensors; the junction whose pattern fits best is the answer. Then the model is asked directly: what would a leak of that size there do?",
+   "calls": [{"key": "leak", "as": "viewer", "method": "GET", "path": "/v1/leaks/{{det.result.ids.leak}}"},
+             {"key": "sim", "as": "analyst", "method": "POST", "path": "/v1/hydraulic/simulate", "body": {"district": 7, "node": "{{leak.candidates.0.node}}", "lps": "{{leak.candidates.0.lps}}", "leak_event_id": "{{det.result.ids.leak}}"}}]},
+  {"title": "Two alarms that are not leaks", "say": "One pressure sensor reads lower every day, but no extra water is entering the district and its neighbours are steady: the sensor is at fault, not the pipes. In another district the flow jumped for one night and went back: a leak does not repair itself.",
+   "calls": [{"key": "fault", "as": "viewer", "method": "GET", "path": "/v1/leaks/{{det.result.ids.sensor_fault}}"}, {"key": "spike", "as": "viewer", "method": "GET", "path": "/v1/leaks/{{det.result.ids.transient_demand}}"}]},
+  {"title": "Send a crew, to the right places only", "say": "The leak gets an urgent work order with a small area to survey. The sensor gets a routine recalibration, no digging. The harmless night of demand is refused a work order.",
+   "calls": [{"key": "wo", "as": "analyst", "method": "POST", "path": "/v1/work-orders", "body": {"leak_event_id": "{{det.result.ids.leak}}", "note": "Night flow up for four nights. Acoustic survey from the best candidate outwards."}},
+             {"key": "wo2", "as": "analyst", "method": "POST", "path": "/v1/work-orders", "body": {"leak_event_id": "{{det.result.ids.sensor_fault}}", "note": "Recalibrate or replace the transducer."}},
+             {"key": "wo3", "as": "analyst", "method": "POST", "path": "/v1/work-orders", "expect_error": true, "body": {"leak_event_id": "{{det.result.ids.transient_demand}}", "note": "Investigate the flow jump."}}]},
+  {"title": "Which pipes will break next?", "say": "A model learns from failures up to 2022 and is tested on 2023 to 2025, which it never saw. It is compared with the rule most utilities start from: the oldest pipes are the riskiest.",
+   "calls": [{"key": "risk", "as": "planner", "method": "POST", "path": "/v1/risk:train"}, {"key": "top", "as": "viewer", "method": "GET", "path": "/v1/assets?limit=8"},
+             {"key": "one", "as": "viewer", "method": "GET", "path": "/v1/assets/{{top.items.0.id}}/risk"}]},
+  {"title": "Five years of replacements on a fixed budget", "say": "With $4 million a year, which pipes should be replaced and when? The plan ranks pipes by failure cost avoided per dollar, and is set beside replacing the oldest pipes first with the same money.",
+   "calls": [{"key": "plan", "as": "planner", "method": "POST", "path": "/v1/capital-plan/optimize", "body": {"budget_per_year": 4000000, "years": 5}}]},
+  {"title": "The audit trail", "say": "Who loaded the network, what was detected, who sent crews and who set the plan: recorded in a log that cannot be edited.",
+   "calls": [{"key": "audit", "as": "planner", "method": "GET", "path": "/v1/audit?limit=8"}]}
+ ]
+}
